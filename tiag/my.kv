@@ -1,0 +1,279 @@
+<Choice>
+
+    button1:button1
+    button2:button2
+    button3:button3
+    button4:button4
+    button5:button5
+    button:button
+
+    textfield:textfield
+
+    button1:button1
+
+    GridLayout:
+        cols:1
+        rows:3
+        size: root.width, root.height
+        padding: 5
+
+        GridLayout:
+            cols:2
+            rows:3
+            spacing: 2
+
+            Button:
+                id: button1
+                on_press:
+                    root.setWhichTransformation(1)
+                background_normal: ''
+                background_color: (1.0, 1.0, 1.0, 1.0)
+                GridLayout:
+                    padding: 0,5
+                    rows:2
+                    cols:2
+                    y: self.parent.y
+                    x: self.parent.x
+                    size: self.parent.size
+
+                    Label:
+                        text: "L"
+                        color:(1,0.5,0.5,1)
+                        size_hint: 0.1,0.05
+
+                    Label:
+                        text: "R"
+                        color:(1,0.5,0.5,1)
+                        size_hint: 0.1,0.05
+
+                    Image:
+                        source: "transformacja1L.png"
+                        keep_ratio: True
+                        allow_stretch: True
+
+
+                    Image:
+                        source: "transformacja1.png"
+                        keep_ratio: True
+                        allow_stretch: True
+
+
+
+
+
+
+            Button:
+                id: button2
+                on_press:
+                    root.setWhichTransformation(2)
+                background_normal: ''
+                background_color: (1.0, 1.0, 1.0, 1.0)
+                GridLayout:
+                    padding: 0,5
+                    rows:2
+                    cols:2
+                    y: self.parent.y
+                    x: self.parent.x
+                    size: self.parent.size
+
+                    Label:
+                        text: "L"
+                        color:(1,0.5,0.5,1)
+                        size_hint: 0.1,0.05
+
+                    Label:
+                        text: "R"
+                        color:(1,0.5,0.5,1)
+                        size_hint: 0.1,0.05
+
+                    Image:
+                        source: "transformacja2L.png"
+                        keep_ratio: True
+                        allow_stretch: True
+
+
+                    Image:
+                        source: "transformacja2.png"
+                        keep_ratio: True
+                        allow_stretch: True
+
+
+
+
+
+            Button:
+                id: button3
+                on_press:
+                    root.setWhichTransformation(3)
+                background_normal: ''
+                background_color: (1.0, 1.0, 1.0, 1.0)
+                GridLayout:
+                    padding: 0,5
+                    rows:2
+                    cols:2
+                    y: self.parent.y
+                    x: self.parent.x
+                    size: self.parent.size
+
+                    Label:
+                        text: "L"
+                        color:(1,0.5,0.5,1)
+                        size_hint: 0.1,0.05
+
+                    Label:
+                        text: "R"
+                        color:(1,0.5,0.5,1)
+                        size_hint: 0.1,0.05
+
+                    Image:
+                        source: "transformacja3L.png"
+                        keep_ratio: True
+                        allow_stretch: True
+
+
+                    Image:
+                        source: "transformacja3.png"
+                        keep_ratio: True
+                        allow_stretch: True
+
+
+
+
+            Button:
+                id: button4
+                on_press:
+                    root.setWhichTransformation(4)
+                background_normal: ''
+                background_color: (1.0, 1.0, 1.0, 1.0)
+                GridLayout:
+                    padding: 0,5
+                    rows:2
+                    cols:2
+                    y: self.parent.y
+                    x: self.parent.x
+                    size: self.parent.size
+
+                    Label:
+                        text: "L"
+                        color:(1,0.5,0.5,1)
+                        size_hint: 0.1,0.05
+
+                    Label:
+                        text: "R"
+                        color:(1,0.5,0.5,1)
+                        size_hint: 0.1,0.05
+
+                    Image:
+                        source: "transformacja4L.png"
+                        keep_ratio: True
+                        allow_stretch: True
+
+
+                    Image:
+                        source: "transformacja4.png"
+                        keep_ratio: True
+                        allow_stretch: True
+
+
+
+
+
+            Button:
+                id: button5
+                on_press:
+                    root.setWhichTransformation(5)
+                background_normal: ''
+                background_color: (1.0, 1.0, 1.0, 1.0)
+                GridLayout:
+                    padding: 0,5
+                    rows:2
+                    cols:2
+                    y: self.parent.y
+                    x: self.parent.x
+                    size: self.parent.size
+
+                    Label:
+                        text: "L"
+                        color:(1,0.5,0.5,1)
+                        size_hint: 0.1,0.05
+
+                    Label:
+                        text: "R"
+                        color:(1,0.5,0.5,1)
+                        size_hint: 0.1,0.05
+
+                    Image:
+                        source: "transformacja5L.png"
+                        keep_ratio: True
+                        allow_stretch: True
+
+
+                    Image:
+                        source: "transformacja5.png"
+                        keep_ratio: True
+                        allow_stretch: True
+
+
+
+
+
+            Button:
+                id: button6
+                on_press:
+                    root.setWhichTransformation(6)
+                background_normal: ''
+                background_color: (1.0, 1.0, 1.0, 1.0)
+                GridLayout:
+                    padding: 0,5
+                    rows:2
+                    cols:2
+                    y: self.parent.y
+                    x: self.parent.x
+                    size: self.parent.size
+
+                    Label:
+                        text: "L"
+                        color:(1,0.5,0.5,1)
+                        size_hint: 0.1,0.05
+
+                    Label:
+                        text: "R"
+                        color:(1,0.5,0.5,1)
+                        size_hint: 0.1,0.05
+
+                    Image:
+                        source: "transformacja6L.png"
+                        keep_ratio: True
+                        allow_stretch: True
+
+
+                    Image:
+                        source: "transformacja6.png"
+                        keep_ratio: True
+                        allow_stretch: True
+
+
+
+
+        TextInput:
+            id: textfield
+            text: "(1,1)(2,2)"
+            size_hint: 0.1,0.05
+            multiline:False
+
+        GridLayout:
+            rows:1
+            cols:2
+            size_hint: 0.1,0.05
+
+            Button:
+                id: button
+                text: "Zobacz graf przed transformacją"
+                on_press: root.goToGraphView()
+
+            Button:
+                id: button
+                text: "Zobacz graf po transformacji"
+                on_press:
+                    root.setAssignement(textfield.text)
+                    root.transform()
