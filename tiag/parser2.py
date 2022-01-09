@@ -3,7 +3,15 @@ import networkx as nx
 #funkcja bierze główny graf, graf lewej strony produkcji i stringa z przyporządkowaniem
 #string jest w formacie y0;y1;yi;.. gdzie yi to indeks w grafie głównym i-tego wierzchołka grafu lewej strony produkcji
 #funcja zwraca listę y przyporządkowania wierzchołków lub None jeśli przyporządkowanie jest błędne
-def parser2(mainGraph,leftGraph,assignment):
+
+#zmienić input(tak, żeby funkcja przyjmowała dane w formacie np. "(0,3),(1,2),(2,5)" - lewa liczba z głównego grafu, prawa z L)
+#done - zmieniam output, żeby pasował do funkcji SPO(funkcja musi zwracać listę krotek, gdzie (a, b) oznacza, ze wierzcholek a w G odpowiada b w L)
+
+#To do
+# def parseStringForParser2(assignmentStr):
+#     tupleList = assignmentStr.split(",")
+
+def assignmentParser(mainGraph, leftGraph, assignment):
 
     str_y=assignment.split(";")
     map_y=map(int,str_y)
@@ -27,7 +35,12 @@ def parser2(mainGraph,leftGraph,assignment):
             return None
 
     print("Jest OK")
-    return y
+
+    assignment_tuples = []
+    for i in range(0, len(y)):
+        assignment_tuples.append((y[i], i))
+
+    return assignment_tuples
 
 
 #test
@@ -45,5 +58,5 @@ leftGraph.add_edge(2,3)
 
 
 assignment="1;2;3;4"
-parser2(mainGraph,leftGraph,assignment)
+assignmentParser(mainGraph, leftGraph, assignment)
 #działa jako tako

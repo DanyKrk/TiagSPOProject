@@ -19,6 +19,11 @@ Builder.load_file('my.kv')
 
 import networkx as nx
 import matplotlib.pyplot as plt
+import copy
+
+import parserWS
+import parser2
+import SPO
 
 
 
@@ -61,26 +66,25 @@ class Choice(Widget):
         main_app.screen_menager.current = "Graph View"
         main_app.screen_menager.transition.direction = "right"
 
+
+
     def transform(self): #wykonuje transformację i przełącza na screen z przetransformowanym grafem
+
+        def leftGraph(transformationID):
+            leftGraphId = 2 * transformationID - 1
+            return graphs[leftGraphId]
+
+        def rightGraph(transformationID):
+            rightGraphID = 2 * transformationID
+            return graphs[rightGraphID]
+
         global mainGraph
         plt.close()
 
-        print(self.whichTransformation)  #te dwa printy wywalić
-        print(self.assignement)
-        """
-        Algorytm zmieniający mainGraph wedle przyjętej transformacji
-        
-        self.self.whichTransformation to int wskazujący wybraną przez użytkownika transformacje
-        ustala sie po zatwierdzeniu przyciskiem
-        nalezy wybrac transformacje z odpowiedniej pozycji w liscie transformacji
-        
-        self.assignement to string wpisanego przez użytkownica indeksowania, sktory powinien byc parsowany parserem2
-        
-        Przykładowo zrobiłem dodanie jednej krawdzei ale wiadomo, tu ma być allgorytm:
-        """
-        mainGraph.add_edge(1, 6) #wywalić
-        """"""
 
+        links = parser2.assignmentParser(mainGraph, leftGraph(self.whichTransformation), self.assignement)
+
+        SPO.single_pushout(mainGraph, leftGraph(self.whichTransformation), rightGraph(self.whichTransformation), links)
 
         nx.draw(mainGraph, with_labels=True)
         plt.savefig("maingraph.png")
@@ -116,32 +120,13 @@ class MyApp(App):
         return self.screen_menager
 
 
-
-
-
 if __name__ == '__main__':
     global graphs
     global mainGraph
-    """
-    Parser pliku tekstowego:
-        zapisać grafy z pliku jako lista graphs
-        zapisać graf główny jako mainGraph - jak niżej
-        
-    """
+    filepath = "ex1.txt"  # nazwa ścieżki, trzeba zdecydować jak będzię ona wprowadzana
 
-    graphs = [nx.Graph()]
+    graphs = parserWS.creating_output_list(filepath)
     mainGraph = graphs[0]
-
-
-
-    # przykładowy graf - usunąć gdy będzie działał input
-    mainGraph.add_edge(1, 2)
-    mainGraph.add_edge(2, 3)
-    mainGraph.add_edge(3, 4)
-    mainGraph.add_edge(1, 4)
-    mainGraph.add_edge(1, 5)
-    #
-
 
     options = {
         'node_size': 100,
@@ -150,18 +135,13 @@ if __name__ == '__main__':
     nx.draw(mainGraph, with_labels=True)
     plt.savefig("maingraph.png")
 
-    """
-    tutaj sugeruje jakiegos fora który "i" od 0 do długość tablicy graphs a w środku robi brrr:
-        plt.close() - czyści matplotliba na ktorym sie robi graf
-        nx.draw(graphs[i]) - robi takie brr brr żeby sie dało graf wyeksportować do obrazka
-        plt.savefig("transformacja" + str(i) + ".png") - musimy zaktualizować obrazki przedstawiające kolejne transformacje, wg takiego schematu, bo pozniej uzywam ich nazw zeby je wyswitelic w choice
-                lub
-        plt.savefig("transformacja" + str(i) + "L.png") - gdy jest to lewa strona transformacji
-        
-    generalnie obrazki z lewa strona maja nazwy transformacja1L.png, a z prawa po prostu transformacja1.png
-    nie zaimplementowałem tej petli bo nie wiem jaka jest konwencja z lista grafów
-        
-    """
+    for i in range(1, len(graphs)):
+        plt.close()
+        nx.draw(graphs[i])
+        if i % 2 == 0:
+            plt.savefig("transformacja" + str(i-1) + ".png")
+        else:
+            plt.savefig("transformacja" + str(i) + "L.png")
 
 
     plt.close()
