@@ -29,9 +29,14 @@ def assignmentParser(mainGraph, leftGraph, assignment):
     #usuwam warunek na liczbę wierzchołków w głównym grafie bo nie zawsze działa
     # a i tak jest to sprawdzane przy sprawdzaniu czy krawędź istnieje
 
+    for n in y.keys():
+        if not leftGraph.has_node(n):
+            print("Błędne przyporządkowanie (wierzchołek nieistniejący w grafie lewej strony produkcji)")
+            return None
+
     for edge in leftGraph.edges:
         if not mainGraph.has_edge(y[edge[0]],y[edge[1]]):
-            print("Błędne przyporządkowanie")
+            print("Błędne przyporządkowanie (krawędź nie istnieje w głównym grafie)")
             return None
 
     print("Jest OK")
