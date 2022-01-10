@@ -1,10 +1,10 @@
 import networkx as nx
 
 #funkcja bierze główny graf, graf lewej strony produkcji i stringa z przyporządkowaniem
-#string jest w formacie y0;y1;yi;.. gdzie yi to indeks w grafie głównym i-tego wierzchołka grafu lewej strony produkcji
+#
 #funcja zwraca listę y przyporządkowania wierzchołków lub None jeśli przyporządkowanie jest błędne
 
-#zmienić input(tak, żeby funkcja przyjmowała dane w formacie np. "(0,3),(1,2),(2,5)" - lewa liczba z głównego grafu, prawa z L)
+#done - zmienić input(tak, żeby funkcja przyjmowała dane w formacie np. "(0,3),(1,2),(2,5)" - lewa liczba z głównego grafu, prawa z L)
 #done - zmieniam output, żeby pasował do funkcji SPO(funkcja musi zwracać listę krotek, gdzie (a, b) oznacza, ze wierzcholek a w G odpowiada b w L)
 
 #To do
@@ -12,22 +12,22 @@ import networkx as nx
 #     tupleList = assignmentStr.split(",")
 
 def assignmentParser(mainGraph, leftGraph, assignment):
+    map1 = map(int, assignment.replace('(', '').replace(')', '').split(','))
+    vertList = list(map1)
 
-    str_y=assignment.split(";")
-    map_y=map(int,str_y)
-    y=list(map_y)
+    y = {}  #przypomniałem sobie że istnieją słowniki
+    for i in range(0, len(vertList), 2):
+        if vertList[i + 1] in y or vertList[i] in y.values():
+            print("Każdy wierzchołek może być przyporządkowany do jednego wierzchołka")
+            return
+        y[vertList[i + 1]] = vertList[i]
 
-    if len(y)!=leftGraph.number_of_nodes():
+    if len(y) != leftGraph.number_of_nodes():
         print("Przyporządkowanie niezgodne z liczbą wierzchołków grafu lewej strony produkcji")
         return None
 
-    if max(y)>mainGraph.number_of_nodes()-1: #zakładam że w grafie głównym wierzchołki są numerowane od 0 po kolei
-        print("Przyporządkowanie niezgodne z liczbą wierzchołków głównego grafu")
-        return None
-
-    if len(y)!=len(set(y)):
-        print("Każdy wierzchołek musi być przyporządkowany do jednego wierzchołka")
-        return None
+    #usuwam warunek na liczbę wierzchołków w głównym grafie bo nie zawsze działa
+    # a i tak jest to sprawdzane przy sprawdzaniu czy krawędź istnieje
 
     for edge in leftGraph.edges:
         if not mainGraph.has_edge(y[edge[0]],y[edge[1]]):
@@ -57,6 +57,6 @@ leftGraph.add_edge(1,2)
 leftGraph.add_edge(2,3)
 
 
-assignment="1;2;3;4"
+assignment="(1,0),(3,2),(2,1),(4,3)"
 assignmentParser(mainGraph, leftGraph, assignment)
 #działa jako tako
