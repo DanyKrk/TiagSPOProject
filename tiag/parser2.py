@@ -19,7 +19,7 @@ def assignmentParser(mainGraph, leftGraph, assignment):
     for i in range(0, len(vertList), 2):
         if vertList[i + 1] in y or vertList[i] in y.values():
             print("Każdy wierzchołek może być przyporządkowany do jednego wierzchołka")
-            return
+            return None
         y[vertList[i + 1]] = vertList[i]
 
     if len(y) != leftGraph.number_of_nodes():
