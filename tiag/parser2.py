@@ -37,8 +37,8 @@ def assignmentParser(mainGraph, leftGraph, assignment):
     print("Jest OK")
 
     assignment_tuples = []
-    for i in range(0, len(y)):
-        assignment_tuples.append((y[i], i))
+    for x,y in y.items():  #poprawiam żeby ładnie działało ze słownikiem
+        assignment_tuples.append((y, x))
 
     return assignment_tuples
 
