@@ -84,7 +84,7 @@ class Choice(Widget):
 
         links = parser2.assignmentParser(mainGraph, leftGraph(self.whichTransformation), self.assignement)
 
-        SPO.single_pushout(mainGraph, leftGraph(self.whichTransformation), rightGraph(self.whichTransformation), links)
+        mainGraph = SPO.single_pushout(mainGraph, leftGraph(self.whichTransformation), rightGraph(self.whichTransformation), links)
 
         nx.draw(mainGraph, with_labels=True)
         plt.savefig("maingraph.png")
@@ -123,13 +123,13 @@ class MyApp(App):
 if __name__ == '__main__':
     global graphs
     global mainGraph
-    filepath = "ex1.txt"  # nazwa ścieżki, trzeba zdecydować jak będzię ona wprowadzana
+    filepath = "ex1.txt"
 
     graphs = parserWS.creating_output_list(filepath)
     mainGraph = graphs[0]
 
     options = {
-        'node_size': 100,
+        'node_size': 100
     }
 
     nx.draw(mainGraph, with_labels=True)
@@ -137,11 +137,11 @@ if __name__ == '__main__':
 
     for i in range(1, len(graphs)):
         plt.close()
-        nx.draw(graphs[i])
+        nx.draw(graphs[i], with_labels=True)
         if i % 2 == 0:
-            plt.savefig("transformacja" + str(i-1) + ".png")
+            plt.savefig("transformacja" + str(int(i/2)) + ".png")
         else:
-            plt.savefig("transformacja" + str(i) + "L.png")
+            plt.savefig("transformacja" + str(int(i/2 + 1)) + "L.png")
 
 
     plt.close()
