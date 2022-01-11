@@ -23,10 +23,14 @@ def creating_output_list(filepath):  # głowna funkcja
     file = open(filepath, "r")
     graphs = []
     variable = file.readline()
+    
+    # UPDATE (START)
     while len(variable) > 0:
         graphs.append(creating_graph(variable))
         variable = file.readline()
+    # UPDATE (END)
     
+    # previous code
     #for _ in range(0, 13):
         #graphs.append(creating_graph(file.readline()))
         
