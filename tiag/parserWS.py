@@ -22,7 +22,13 @@ def creating_graph(edges):  # funkcja tworząca graf, (wiersz pliku tekstowego j
 def creating_output_list(filepath):  # głowna funkcja
     file = open(filepath, "r")
     graphs = []
-    for _ in range(0, 13):
-        graphs.append(creating_graph(file.readline()))
+    variable = file.readline()
+    while len(variable) > 0:
+        graphs.append(creating_graph(variable))
+        variable = file.readline()
+    
+    #for _ in range(0, 13):
+        #graphs.append(creating_graph(file.readline()))
+        
     return graphs
 
