@@ -22,9 +22,9 @@ def creating_graph(edges):  # funkcja tworząca graf, (wiersz pliku tekstowego j
 def creating_output_list(filepath):  # głowna funkcja
     file = open(filepath, "r")
     graphs = []
-    variable = file.readline()
     
     # UPDATE (START)
+    variable = file.readline()
     while len(variable) > 0:
         graphs.append(creating_graph(variable))
         variable = file.readline()
