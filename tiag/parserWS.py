@@ -1,38 +1,34 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 
-# filepath = "ex1.txt"  # nazwa ścieżki, trzeba zdecydować jak będzię ona wprowadzana
+filepath = "ex2.txt"  # nazwa ścieżki, trzeba zdecydować jak będzię ona wprowadzana
+# w pliku wejsciowym dwia olejne wiersze opisują graf
+# pierwszy zawiera etykiety wypisane po kolei odzielone ';'
+# drugi zawiera krotki oddzielone ';' , reprezentujące krawędzie
 
-def creating_graph(edges):  # funkcja tworząca graf, (wiersz pliku tekstowego jako dane wejściowe)
+def creating_graph(list_nodes,list_edges):
+    labels = list_nodes.split(";")
     G = nx.Graph()
-    nodes = edges.split(";")    # rozdzielanie kolejnych wierzchołków do listy
-    for i in range(len(nodes)):
-        G.add_node(i)
-        for j in range(1, len(nodes[i]) - 1, 2):
-            new_edge = int(nodes[i][j])
-            if new_edge < len(nodes) and str(i) in nodes[new_edge]:
-                G.add_edge(i, new_edge)
-            else:
-                print("ERROR!!!")
-                quit()
-    #nx.draw_networkx(G)
-    #plt.show()
+    for i in range(len(labels)):
+        G.add_node(i, label=labels[i])
+
+    edges = list_edges.split(";")
+    for i in range(len(edges)):
+        if 0 <= int(edges[i][1]) < len(G.nodes()) and 0 <= int(edges[i][3]) < len(G.nodes()):
+            G.add_edge(int(edges[i][1]), int(edges[i][3]))
+        else:
+            print("ERROR!!!")
+            quit()
     return G
 
 def creating_output_list(filepath):  # głowna funkcja
     file = open(filepath, "r")
     graphs = []
-    
-    # UPDATE (START)
-    variable = file.readline()
-    while len(variable) > 0:
-        graphs.append(creating_graph(variable))
-        variable = file.readline()
-    # UPDATE (END)
-    
-    # previous code
-    #for _ in range(0, 13):
-        #graphs.append(creating_graph(file.readline()))
-        
+    labels = file.readline()
+    edges = file.readline()
+    while len(labels) > 0 and len(edges)>0:
+        graphs.append(creating_graph(labels,edges))
+        labels = file.readline()
+        edges = file.readline()
     return graphs
 
