@@ -2,7 +2,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 filepath = "ex2.txt"  # nazwa ścieżki, trzeba zdecydować jak będzię ona wprowadzana
-# w pliku wejsciowym dwia olejne wiersze opisują graf
+# w pliku wejsciowym dwa kolejne wiersze opisują graf
 # pierwszy zawiera etykiety wypisane po kolei odzielone ';'
 # drugi zawiera krotki oddzielone ';' , reprezentujące krawędzie
 
