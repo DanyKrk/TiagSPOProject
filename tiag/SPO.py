@@ -39,5 +39,5 @@ def single_pushout(G, L, R, links):
     for e in R_edges:
         G1.add_edge(links_map[e[0]], links_map[e[1]])
 
-    return G1
+    return G, G1
 # end def
