@@ -1,33 +1,51 @@
 import networkx as nx
 
 #funkcja bierze główny graf, graf lewej strony produkcji i stringa z przyporządkowaniem
-#string jest w formacie y0;y1;yi;.. gdzie yi to indeks w grafie głównym i-tego wierzchołka grafu lewej strony produkcji
+#
 #funcja zwraca listę y przyporządkowania wierzchołków lub None jeśli przyporządkowanie jest błędne
-def parser2(mainGraph,leftGraph,assignment):
 
-    str_y=assignment.split(";")
-    map_y=map(int,str_y)
-    y=list(map_y)
+#done - zmienić input(tak, żeby funkcja przyjmowała dane w formacie np. "(0,3),(1,2),(2,5)" - lewa liczba z głównego grafu, prawa z L)
+#done - zmieniam output, żeby pasował do funkcji SPO(funkcja musi zwracać listę krotek, gdzie (a, b) oznacza, ze wierzcholek a w G odpowiada b w L)
 
-    if len(y)!=leftGraph.number_of_nodes():
+#To do
+# def parseStringForParser2(assignmentStr):
+#     tupleList = assignmentStr.split(",")
+
+def assignmentParser(mainGraph, leftGraph, assignment):
+    map1 = map(int, assignment.replace('(', '').replace(')', '').split(','))
+    vertList = list(map1)
+
+    y = {}  #przypomniałem sobie że istnieją słowniki
+    for i in range(0, len(vertList), 2):
+        if vertList[i + 1] in y or vertList[i] in y.values():
+            print("Każdy wierzchołek może być przyporządkowany do jednego wierzchołka")
+            return None
+        y[vertList[i + 1]] = vertList[i]
+
+    if len(y) != leftGraph.number_of_nodes():
         print("Przyporządkowanie niezgodne z liczbą wierzchołków grafu lewej strony produkcji")
         return None
 
-    if max(y)>mainGraph.number_of_nodes()-1: #zakładam że w grafie głównym wierzchołki są numerowane od 0 po kolei
-        print("Przyporządkowanie niezgodne z liczbą wierzchołków głównego grafu")
-        return None
+    #usuwam warunek na liczbę wierzchołków w głównym grafie bo nie zawsze działa
+    # a i tak jest to sprawdzane przy sprawdzaniu czy krawędź istnieje
 
-    if len(y)!=len(set(y)):
-        print("Każdy wierzchołek musi być przyporządkowany do jednego wierzchołka")
-        return None
+    for n in y.keys():
+        if not leftGraph.has_node(n):
+            print("Błędne przyporządkowanie (wierzchołek nieistniejący w grafie lewej strony produkcji)")
+            return None
 
     for edge in leftGraph.edges:
         if not mainGraph.has_edge(y[edge[0]],y[edge[1]]):
-            print("Błędne przyporządkowanie")
+            print("Błędne przyporządkowanie (krawędź nie istnieje w głównym grafie)")
             return None
 
     print("Jest OK")
-    return y
+
+    assignment_tuples = []
+    for x,y in y.items():  #poprawiam żeby ładnie działało ze słownikiem
+        assignment_tuples.append((y, x))
+
+    return assignment_tuples
 
 
 #test
@@ -44,6 +62,6 @@ leftGraph.add_edge(1,2)
 leftGraph.add_edge(2,3)
 
 
-assignment="1;2;3;4"
-parser2(mainGraph,leftGraph,assignment)
+assignment="(1,0),(3,2),(2,1),(4,3)"
+assignmentParser(mainGraph, leftGraph, assignment)
 #działa jako tako
