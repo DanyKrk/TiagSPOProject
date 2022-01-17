@@ -1,10 +1,7 @@
 import kivy
 from kivy.app import App
-
 from kivy.uix.screenmanager import ScreenManager,Screen
-
 from kivy.lang import Builder
-
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.gridlayout import GridLayout
@@ -16,6 +13,18 @@ from kivy.properties import ObjectProperty
 
 Builder.load_file('my.kv')
 
+options = {
+    "font_size": 10,
+    "verticalalignment": "top"
+
+}
+
+options2 = {
+    "font_size": 20,
+    "verticalalignment": "top",
+    "node_size": 1000,
+}
+
 
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -24,8 +33,6 @@ import copy
 import parserWS
 import parser2
 import SPO
-
-
 
 class GraphView(GridLayout): #screen przedstawiający duży obrazek grafu
     def __init__(self, **kwargs):
@@ -39,18 +46,44 @@ class GraphView(GridLayout): #screen przedstawiający duży obrazek grafu
         self.image.allow_stretch = True
         self.add_widget(self.image)
 
-        self.button = Button(text="Wybór transformacji")
-        self.button.size_hint = (0.1,0.05)
-        self.button.bind(on_press=self.goToChoice)
-        self.add_widget(self.button)
+        self.buttons = GridLayout()
+        self.buttons.cols = 2
+        self.buttons.rows = 1
 
+        self.button = Button(text="Cofnij transformację")
+        self.button.size_hint = (0.3,0.05)
+        self.button.bind(on_press=self.undoTransformation)
+        self.buttons.add_widget(self.button)
+
+        self.button = Button(text="Wybór transformacji")
+        self.button.size_hint = (0.7,0.05)
+        self.button.bind(on_press=self.goToChoice)
+        self.buttons.add_widget(self.button)
+
+        self.buttons.size_hint = (0.1, 0.05)
+        self.add_widget(self.buttons)
 
     def goToChoice(self,instance): #aktywowana przez przycisk, zmienia screen na wybor transformacji
         main_app.screen_menager.current = "Choice"
         main_app.screen_menager.transition.direction = "left"
 
+    def undoTransformation(self,instance):
+        global mainGraph
+        global prevGraph
+        mainGraph = prevGraph
+        plt.close()
+        labelstable = nx.get_node_attributes(mainGraph, 'label')
+        pos = nx.spring_layout(mainGraph)
+        nx.draw_networkx(mainGraph, pos, **options)
+        nx.draw_networkx_labels(mainGraph, pos, labels=labelstable, font_size=10, verticalalignment="bottom")
+        plt.savefig("maingraph.png")
+        self.updateImage()
+        plt.close()
+
+
     def updateImage(self): #uaktualnia obraz grafu po zrobieniu transformacji
         self.image.reload()
+
 
 
 class Choice(Widget):
@@ -59,7 +92,7 @@ class Choice(Widget):
     #zatwierdzić przyciskiem w prawym dolnym rogu
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.whichTransformation = 0
+        self.whichTransformation = 1
         self.assignement = ""
 
     def goToGraphView(self): #umożliwia podglad grafu podczas wpisywania indeksowania
@@ -79,26 +112,65 @@ class Choice(Widget):
             return graphs[rightGraphID]
 
         global mainGraph
+        global prevGraph
         plt.close()
 
+        if (self.whichTransformation > numOfTransformations):
+            links,isOk = [],False
+            main_app.error.errorType("Wybrano transformację której nie podano w pliku wejściowym")
+        else:
+            links,isOk = parser2.assignmentParser(mainGraph, leftGraph(self.whichTransformation), self.assignement,main_app)
 
-        links = parser2.assignmentParser(mainGraph, leftGraph(self.whichTransformation), self.assignement)
+        if (isOk):
+            prevGraph,mainGraph = SPO.single_pushout(mainGraph, leftGraph(self.whichTransformation), rightGraph(self.whichTransformation), links)
 
-        mainGraph = SPO.single_pushout(mainGraph, leftGraph(self.whichTransformation), rightGraph(self.whichTransformation), links)
+            plt.close()
+            labelstable = nx.get_node_attributes(mainGraph, 'label')
+            pos = nx.spring_layout(mainGraph)
+            nx.draw_networkx(mainGraph, pos, **options)
+            nx.draw_networkx_labels(mainGraph, pos, labels=labelstable, font_size=10, verticalalignment="bottom")
+            plt.savefig("maingraph.png")
 
-        nx.draw(mainGraph, with_labels=True)
-        plt.savefig("maingraph.png")
+            main_app.graph_view.updateImage()
 
-        main_app.graph_view.updateImage()
+            main_app.screen_menager.current = "Graph View"
+            main_app.screen_menager.transition.direction = "left"
 
-        main_app.screen_menager.current = "Graph View"
-        main_app.screen_menager.transition.direction = "left"
+        else:
+            main_app.screen_menager.current = "Error"
+            main_app.screen_menager.transition.direction = "up"
+
+    def errorNoticed(self,errorMessage):
+        main_app.screen_menager.current = "Error"
+        main_app.error.errorType(errorMessage)
 
     def setWhichTransformation(self,x):
         self.whichTransformation = x
 
     def setAssignement(self,x):
         self.assignement = x
+
+
+
+class Error(GridLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.cols = 1
+        self.size_hint = (0.99, 0.99)
+        self.pos_hint = {"center_x": 0.5, "center_y": 0.5}
+
+        self.label = Label(text="Wystąpił błąd: ")
+        self.add_widget(self.label)
+        self.button = Button(text="Powrót")
+        self.button.bind(on_press=self.goToChoice)
+        self.add_widget(self.button)
+
+    def errorType(self,message):
+        self.label.text="Wystapił błąd: " + message
+
+    def goToChoice(self, instance):
+        main_app.screen_menager.current = "Choice"
+        main_app.screen_menager.transition.direction = "down"
 
 
 class MyApp(App):
@@ -112,6 +184,11 @@ class MyApp(App):
         screen.add_widget(self.graph_view)
         self.screen_menager.add_widget(screen)
 
+        self.error = Error()
+        screen = Screen(name="Error")
+        screen.add_widget(self.error)
+        self.screen_menager.add_widget(screen)
+
         self.choice = Choice()
         screen = Screen(name="Choice")
         screen.add_widget(self.choice)
@@ -123,25 +200,41 @@ class MyApp(App):
 if __name__ == '__main__':
     global graphs
     global mainGraph
-    filepath = "ex1.txt"
+    global prevGraph
+    global numOfTransformations
+    filepath = "ex3.txt"
 
     graphs = parserWS.creating_output_list(filepath)
     mainGraph = graphs[0]
+    prevGraph = copy.deepcopy(mainGraph)
+    numOfTransformations = (len(graphs) - 1)/2
 
-    options = {
-        'node_size': 100
-    }
-
-    nx.draw(mainGraph, with_labels=True)
+    labelstable = nx.get_node_attributes(mainGraph,'label')
+    pos = nx.spring_layout(mainGraph)
+    nx.draw_networkx(mainGraph, pos, **options)
+    nx.draw_networkx_labels(mainGraph, pos, labels=labelstable, font_size=10, verticalalignment="bottom")
+    # plt.axis("off")
     plt.savefig("maingraph.png")
 
     for i in range(1, len(graphs)):
         plt.close()
-        nx.draw(graphs[i], with_labels=True)
+
+        labelstable = nx.get_node_attributes(graphs[i], 'label')
+        pos = nx.spring_layout(graphs[i])
+        nx.draw_networkx(graphs[i], pos, **options2)
+        nx.draw_networkx_labels(graphs[i], pos, labels=labelstable, font_size=20, verticalalignment="bottom")
         if i % 2 == 0:
             plt.savefig("transformacja" + str(int(i/2)) + ".png")
         else:
             plt.savefig("transformacja" + str(int(i/2 + 1)) + "L.png")
+
+    plt.close()
+    for i in range(1,13):
+        if i > len(graphs)-1:
+            if i % 2 == 0:
+                plt.savefig("transformacja" + str(int(i / 2)) + ".png")
+            else:
+                plt.savefig("transformacja" + str(int(i / 2 + 1)) + "L.png")
 
 
     plt.close()

@@ -1,13 +1,14 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 
-filepath = "ex2.txt"  # nazwa ścieżki, trzeba zdecydować jak będzię ona wprowadzana
+
 # w pliku wejsciowym dwa kolejne wiersze opisują graf
 # pierwszy zawiera etykiety wypisane po kolei odzielone ';'
 # drugi zawiera krotki oddzielone ';' , reprezentujące krawędzie
 
 def creating_graph(list_nodes,list_edges):
     labels = list_nodes.split(";")
+    labels[-1] = labels[-1][:len(labels[-1])-1]
     G = nx.Graph()
     for i in range(len(labels)):
         G.add_node(i, label=labels[i])
