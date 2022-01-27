@@ -16,6 +16,8 @@ def single_pushout(G, L, R, links):
     L_nodes = L.nodes
     R_nodes = R.nodes
 
+    new_nodes = []
+
     for l in links:
         links_map[l[1]] = l[0]
 
@@ -33,11 +35,12 @@ def single_pushout(G, L, R, links):
             while i in G1.nodes:
                 i = i + 1
 
+            new_nodes.append(i)
             G1.add_node(i, label=R.nodes[n]["label"])   # adding new nod with label from R
             links_map[n] = i
 
     for e in R_edges:
         G1.add_edge(links_map[e[0]], links_map[e[1]])
 
-    return G, G1
+    return G, G1, new_nodes
 # end def

@@ -122,12 +122,18 @@ class Choice(Widget):
             links,isOk = parser2.assignmentParser(mainGraph, leftGraph(self.whichTransformation), self.assignement,main_app)
 
         if (isOk):
-            prevGraph,mainGraph = SPO.single_pushout(mainGraph, leftGraph(self.whichTransformation), rightGraph(self.whichTransformation), links)
+            prevGraph,mainGraph,new_nodes = SPO.single_pushout(mainGraph, leftGraph(self.whichTransformation), rightGraph(self.whichTransformation), links)
 
             plt.close()
             labelstable = nx.get_node_attributes(mainGraph, 'label')
             pos = nx.spring_layout(mainGraph)
-            nx.draw_networkx(mainGraph, pos, **options)
+            color_map = []
+            for node in mainGraph.nodes:
+                if node in new_nodes:
+                    color_map.append('red')
+                else:
+                    color_map.append("C0")
+            nx.draw_networkx(mainGraph, pos, node_color=color_map, **options)
             nx.draw_networkx_labels(mainGraph, pos, labels=labelstable, font_size=10, verticalalignment="bottom")
             plt.savefig("maingraph.png")
 
